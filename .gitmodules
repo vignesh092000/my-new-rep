@@ -1,3 +1,59 @@
-[submodule "canvas-lms"]
-	path = canvas-lms
-	url = https://github.com/instructure/canvas-lms.git
+##[submodule "canvas-lms"]
+##	path = canvas-lms
+##	url = https://github.com/instructure/canvas-lms.git
+	import json
+import requests
+
+# Replace with your actual Jenkins webhook URL
+webhook_url = "http://<your-jenkins-ip>:8080/github-webhook/"
+
+# Sample GitHub webhook payload (push event)
+payload = {
+    "ref": "refs/heads/main",
+    "before": "0000000000000000000000000000000000000000",
+    "after": "1111111111111111111111111111111111111111",
+    "repository": {
+        "id": 12345678,
+        "name": "sample-repo",
+        "full_name": "your-username/sample-repo",
+        "html_url": "https://github.com/your-username/sample-repo"
+    },
+    "pusher": {
+        "name": "your-username",
+        "email": "your-email@example.com"
+    },
+    "commits": [
+        {
+            "id": "1111111111111111111111111111111111111111",
+            "message": "Initial commit",
+            "timestamp": "2025-08-02T10:00:00Z",
+            "url": "https://github.com/your-username/sample-repo/commit/1111111111111111111111111111111111111111",
+            "author": {
+                "name": "Your Name",
+                "email": "your-email@example.com"
+            }
+        }
+    ],
+    "head_commit": {
+        "id": "1111111111111111111111111111111111111111",
+        "message": "Initial commit",
+        "timestamp": "2025-08-02T10:00:00Z",
+        "url": "https://github.com/your-username/sample-repo/commit/1111111111111111111111111111111111111111",
+        "author": {
+            "name": "Your Name",
+            "email": "your-email@example.com"
+        }
+    }
+}
+
+# Send POST request to Jenkins webhook
+response = requests.post(
+    webhook_url,
+    headers={"Content-Type": "application/json"},
+    data=json.dumps(payload)
+)
+
+# Print response from Jenkins
+print("Status Code:", response.status_code)
+print("Response Body:", response.text)
+
